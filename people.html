@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People - Musée Thivierge</title>
+    <link rel="stylesheet" href="./w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .person {
+            text-align: center;
+            padding: 15px; /* Reduced padding */
+            margin-bottom: 20px; /* Reduced margin-bottom */
+            flex-basis: 30%; /* Approx. one-third for three per row */
+            max-width: 30%;
+            box-sizing: border-box; /* Ensure padding is included in the total width */
+        }
+        .person img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            max-width: 200px;
+            margin: 0 auto;
+            border-radius: 50%;
+        }
+        .person-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .person-bio {
+            text-align: justify;
+            margin-top: 10px;
+        }
+        .section-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        /* Centered row layout */
+        .centered-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px; /* Reduced gap for better fit */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+    <a href="index.html" class="w3-bar-item w3-button"><b>MUSÉE</b> THIVIERGE</a>
+    <!-- Navbar links -->
+    <div class="w3-right w3-hide-small">
+      <a href="index.html" class="w3-bar-item w3-button">HOME</a>
+      <a href="about.html" class="w3-bar-item w3-button">ABOUT</a>
+      <a href="exhibits.html" class="w3-bar-item w3-button">EXHIBITS</a>
+      <a href="people.html" class="w3-bar-item w3-button">PEOPLE</a>
+    </div>
+  </div>
+</div>
+
+<!-- People Section -->
+<div class="w3-content w3-container w3-padding-64">
+  <h3 class="w3-center">PEOPLE</h3>
+
+  <!-- Board of Trustees Section -->
+  <div>
+    <h4 class="section-title w3-center">Board of Trustees</h4>
+    <div id="board-of-trustees-container" class="centered-row"></div>
+  </div>
+
+  <!-- Curators Section -->
+  <div>
+    <h4 class="section-title w3-center">Curators</h4>
+    <div id="curators-container" class="centered-row"></div>
+  </div>
+
+  <!-- Communications Team Section -->
+  <div>
+    <h4 class="section-title w3-center">Communications Team</h4>
+    <div id="communications-team-container" class="centered-row"></div>
+  </div>
+</div>
+
+<script>
+  // Lists of people by team
+  const peopleSections = {
+    "board-of-trustees": ["Vincent", "Kelly"], // Replace with actual folder names
+    "curators": ["Tracey", "Elliott", "Anna"],
+    "communications-team": ["Sandy"]
+  };
+
+  // Function to load people data for a section
+  function loadPeople(section, containerId) {
+    const container = document.getElementById(containerId);
+
+    peopleSections[section].forEach(personFolder => {
+      const personDiv = document.createElement('div');
+      personDiv.classList.add('person');
+
+      // Fetch and display the image
+      const img = document.createElement('img');
+      img.src = `media/people/${section}/${personFolder}/image.jpeg`;
+      img.alt = `Image of ${personFolder}`;
+      personDiv.appendChild(img);
+
+      // Fetch and display the name
+      fetch(`media/people/${section}/${personFolder}/name.txt`)
+        .then(response => response.text())
+        .then(name => {
+          const nameElem = document.createElement('div');
+          nameElem.classList.add('person-name');
+          nameElem.textContent = name;
+          personDiv.appendChild(nameElem);
+
+          // Fetch and display the bio
+          fetch(`media/people/${section}/${personFolder}/bio.txt`)
+            .then(response => response.text())
+            .then(bio => {
+              const bioElem = document.createElement('p');
+              bioElem.classList.add('person-bio');
+              bioElem.textContent = bio;
+              personDiv.appendChild(bioElem);
+            })
+            .catch(error => console.error('Error loading bio:', error));
+        })
+        .catch(error => console.error('Error loading name:', error));
+
+      container.appendChild(personDiv);
+    });
+  }
+
+  // Load all people in each section
+  loadPeople("board-of-trustees", "board-of-trustees-container");
+  loadPeople("curators", "curators-container");
+  loadPeople("communications-team", "communications-team-container");
+</script>
+
+</body>
+</html>

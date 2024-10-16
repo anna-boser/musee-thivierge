@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exhibits - Musée Thivierge</title>
+    <link rel="stylesheet" href="./w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .exhibit {
+            margin-bottom: 40px; /* Adds space between rows */
+        }
+        .exhibit img {
+            width: 100%;
+            height: 300px; /* Set a fixed height for all images */
+            object-fit: cover; /* Crops image to fill the container while maintaining aspect ratio */
+            max-width: 400px;
+            display: block;
+            margin: 0 auto;
+        }
+        .exhibit-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .exhibit-description {
+            text-align: justify;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+    <a href="index.html" class="w3-bar-item w3-button"><b>MUSÉE</b> THIVIERGE</a>
+    <!-- Navbar links -->
+    <div class="w3-right w3-hide-small">
+      <a href="index.html" class="w3-bar-item w3-button">HOME</a>
+      <a href="about.html" class="w3-bar-item w3-button">ABOUT</a>
+      <a href="exhibits.html" class="w3-bar-item w3-button">EXHIBITS</a>
+      <a href="people.html" class="w3-bar-item w3-button">PEOPLE</a>
+    </div>
+  </div>
+</div>
+
+<!-- Exhibits Section -->
+<div class="w3-content w3-container w3-padding-64">
+  <h3 class="w3-center">EXHIBITS</h3>
+  <div id="exhibits-container" class="w3-row-padding w3-margin-top">
+    <!-- Exhibit items will be injected here by JavaScript -->
+  </div>
+</div>
+
+<script>
+  // List of exhibit folder names
+  const exhibitFolders = ["goleta_bay", "ranch_dressing", "classical_music"]; // Replace with the actual folder names
+  
+  // Function to load exhibit data
+  function loadExhibit(folder) {
+    const container = document.getElementById('exhibits-container');
+
+    // Create an exhibit column
+    const exhibitDiv = document.createElement('div');
+    exhibitDiv.classList.add('w3-col', 'm6', 'exhibit');
+
+    // Fetch and display the title
+    fetch(`media/exhibits/${folder}/title.txt`)
+      .then(response => response.text())
+      .then(title => {
+        const titleElem = document.createElement('div');
+        titleElem.classList.add('exhibit-title');
+        titleElem.textContent = title;
+        exhibitDiv.appendChild(titleElem);
+
+        // Fetch and display the image
+        const img = document.createElement('img');
+        img.src = `media/exhibits/${folder}/image.jpeg`;
+        img.alt = `Image of ${title}`;
+        exhibitDiv.appendChild(img);
+
+        // Fetch and display the description
+        fetch(`media/exhibits/${folder}/description.txt`)
+          .then(response => response.text())
+          .then(description => {
+            const descElem = document.createElement('p');
+            descElem.classList.add('exhibit-description');
+            descElem.innerHTML = description;  // Use innerHTML to render <br> tags
+            exhibitDiv.appendChild(descElem);
+          })
+          .catch(error => console.error('Error loading description:', error));
+
+        // Append the exhibit to the container
+        container.appendChild(exhibitDiv);
+      })
+      .catch(error => console.error('Error loading title:', error));
+  }
+
+  // Load all exhibits
+  exhibitFolders.forEach(folder => {
+    loadExhibit(folder);
+  });
+</script>
+
+</body>
+</html>
